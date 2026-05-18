@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Сократ — Мұғалім кабинеті</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,300;0,9..144,400;1,9..144,300&family=Manrope:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    /* ── Мұғалім кабинетінің стильдері ── */
+    .teacher-layout {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 8rem 2rem 5rem;
+    }
+
+    .teacher-hero {
+      margin-bottom: 3rem;
+    }
+
+    .teacher-hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4.5vw, 3rem);
+      font-weight: 300;
+      margin-bottom: 0.5rem;
+    }
+
+    .teacher-hero p {
+      color: var(--ink-muted);
+      font-size: 0.9375rem;
+    }
+
+    /* ── Вкладкалар ── */
+    .tabs {
+      display: flex;
+      gap: 1px;
+      background: var(--ink-faint);
+      border: 1px solid var(--ink-faint);
+      margin-bottom: 2rem;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 0.875rem 1.5rem;
+      background: var(--paper);
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      color: var(--ink-muted);
+      font-weight: 500;
+      transition: background 0.15s, color 0.15s;
+      text-align: center;
+    }
+
+    .tab-btn:hover  { background: var(--paper-dark); color: var(--ink); }
+    .tab-btn.active { background: var(--ink); color: var(--paper); }
+
+    .tab-panel           { display: none; }
+    .tab-panel.active    { display: block; }
+
+    /* ── Форма ── */
+    .form-card {
+      background: var(--paper-dark);
+      border: 1px solid var(--ink-faint);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 110px 1fr 1fr;
+      gap: 1rem;
+      align-items: flex-end;
+      margin-bottom: 1.25rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--ink-muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .form-group select,
+    .form-group input {
+      width: 100%;
+      padding: 0.6rem 0.875rem;
+      border: 1px solid var(--ink-faint);
+      border-radius: 2px;
+      background: var(--paper);
+      font-family: var(--font-body);
+      font-size: 0.9375rem;
+      color: var(--ink);
+      transition: border-color 0.15s;
+    }
+
+    .form-group select:focus,
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--ink);
+    }
+
+    .form-actions { display: flex; align-items: center; gap: 1rem; }
+
+    /* ── Нәтиже аймағы ── */
+    .result-area {
+      border: 1px solid var(--ink);
+      box-shadow: 6px 6px 0 var(--ink);
+      padding: 2rem;
+      background: var(--paper);
+      margin-top: 1.5rem;
+    }
+
+    .result-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--paper-dark);
+      flex-wrap: wrap;
+    }
+
+    /* ── Сабақ жоспары форматы ── */
+    .lp-section       { margin-bottom: 1.5rem; }
+
+    .lp-heading {
+      font-family: var(--font-display);
+      font-size: 1.125rem;
+      font-weight: 400;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--paper-dark);
+      margin-bottom: 0.75rem;
+    }
+
+    .lp-body { color: var(--ink-soft); line-height: 1.7; font-size: 0.9375rem; }
+
+    .lp-body ul  { padding-left: 1.25rem; margin: 0.5rem 0; }
+    .lp-body li  { margin-bottom: 0.25rem; }
+    .lp-body strong { color: var(--ink); }
+
+    /* ── Тест сұрақтары ── */
+    .question-card {
+      border: 1px solid var(--ink-faint);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1rem;
+      transition: border-color 0.15s;
+    }
+
+    .question-card:hover { border-color: var(--ink-muted); }
+
+    .question-header {
+      display: flex;
+      gap: 0.875rem;
+      align-items: baseline;
+      margin-bottom: 0.75rem;
+    }
+
+    .question-num {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--terracotta);
+      font-weight: 600;
+      min-width: 1.5rem;
+    }
+
+    .question-text { font-weight: 500; font-size: 0.9375rem; line-height: 1.5; }
+
+    .question-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.375rem 2rem;
+      margin: 0.75rem 0 1rem 2.375rem;
+    }
+
+    .option {
+      font-size: 0.875rem;
+      color: var(--ink-muted);
+      font-family: var(--font-mono);
+      padding: 0.2rem 0;
+    }
+
+    .option.correct {
+      color: var(--sage);
+      font-weight: 600;
+    }
+
+    .reveal-btn {
+      border: 1px solid var(--ink-faint);
+      background: transparent;
+      padding: 0.35rem 1rem;
+      font-size: 0.8125rem;
+      cursor: pointer;
+      border-radius: 2px;
+      margin-left: 2.375rem;
+      color: var(--ink-muted);
+      transition: all 0.15s;
+      font-family: var(--font-body);
+    }
+
+    .reveal-btn:hover {
+      border-color: var(--ink);
+      color: var(--ink);
+    }
+
+    .answer-reveal {
+      margin: 0.875rem 0 0 2.375rem;
+      padding: 0.875rem 1rem;
+      background: var(--paper-dark);
+      border-left: 3px solid var(--sage);
+    }
+
+    .correct-badge {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      color: var(--sage);
+      font-weight: 600;
+      display: block;
+      margin-bottom: 0.4rem;
+    }
+
+    .explanation-text {
+      font-size: 0.875rem;
+      color: var(--ink-muted);
+      line-height: 1.6;
+    }
+
+    /* ── Статистика ── */
+    .stat-cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--ink-faint);
+      border: 1px solid var(--ink-faint);
+      margin-bottom: 2rem;
+    }
+
+    .stat-card { background: var(--paper); padding: 1.5rem; }
+
+    .stat-value {
+      font-family: var(--font-display);
+      font-size: 2.25rem;
+      font-weight: 300;
+      color: var(--ink);
+      margin-bottom: 0.25rem;
+      line-height: 1.1;
+    }
+
+    .stat-label {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      color: var(--ink-faint);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .stats-section { margin-bottom: 2.5rem; }
+
+    .stats-section h3 {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--ink-muted);
+      margin-bottom: 1rem;
+      letter-spacing: 0.02em;
+    }
+
+    .data-table { width: 100%; border-collapse: collapse; }
+
+    .data-table th {
+      background: var(--ink);
+      color: var(--paper);
+      padding: 0.7rem 1rem;
+      text-align: left;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      letter-spacing: 0.08em;
+      font-weight: 400;
+    }
+
+    .data-table td {
+      padding: 0.7rem 1rem;
+      border-bottom: 1px solid var(--paper-dark);
+      font-size: 0.9rem;
+    }
+
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tbody tr:hover td { background: var(--paper-dark); }
+
+    .stats-updated {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--ink-faint);
+      margin-top: 1rem;
+    }
+
+    /* ── Жүктелу спиннері ── */
+    .spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--ink-faint);
+      border-top-color: var(--ink);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 0.5rem;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .hidden { display: none !important; }
+
+    /* Қиын сұрақтар подсветка */
+    .err-high td { background: rgba(194, 82,  45, 0.08) !important; }
+    .err-mid  td { background: rgba(240, 180,  40, 0.10) !important; }
+    .err-pct-high { color: var(--terracotta); font-weight: 600; }
+    .err-pct-mid  { color: #b07a10; font-weight: 600; }
+
+    /* ── ҚМЖ дисплей стильдері ──────────────────────────── */
+    .kmzh-body { font-size: 0.9rem; line-height: 1.65; }
+
+    .kmzh-border {
+      border-top: 3px double var(--ink);
+      margin: 0.75rem 0 0.4rem;
+    }
+
+    .kmzh-rule {
+      border: none;
+      border-top: 1px solid var(--ink-faint);
+      margin: 0.625rem 0;
+    }
+
+    .kmzh-title {
+      font-family: var(--font-display);
+      font-size: 1.125rem;
+      font-weight: 400;
+      text-align: center;
+      letter-spacing: 0.06em;
+      padding: 0.25rem 0 0.5rem;
+    }
+
+    .kmzh-section-head {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      letter-spacing: 0.14em;
+      color: var(--terracotta);
+      margin: 0.875rem 0 0.2rem;
+    }
+
+    .kmzh-sub-head {
+      font-family: var(--font-display);
+      font-size: 0.9375rem;
+      font-weight: 400;
+      color: var(--ink);
+      margin: 0.625rem 0 0.1rem;
+    }
+
+    .kmzh-label {
+      color: var(--ink);
+      margin: 0.375rem 0 0.1rem;
+    }
+
+    .kmzh-bullet {
+      padding-left: 1.25rem;
+      color: var(--ink-soft);
+      position: relative;
+    }
+
+    .kmzh-quote {
+      padding-left: 1.25rem;
+      font-style: italic;
+      color: var(--ink-muted);
+      border-left: 2px solid var(--ink-faint);
+      margin: 0.2rem 0;
+    }
+
+    .kmzh-meta {
+      color: var(--ink-muted);
+      font-size: 0.875rem;
+    }
+
+    .kmzh-line { color: var(--ink-soft); }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .form-row          { grid-template-columns: 1fr 1fr; }
+      .stat-cards        { grid-template-columns: repeat(2, 1fr); }
+      .question-options  { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 600px) {
+      .tabs              { flex-direction: column; }
+      .form-row          { grid-template-columns: 1fr; }
+      .stat-cards        { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-inner">
+      <a href="index.html" class="logo" aria-label="Сократ — басты бет">
+        <svg class="logo-mark" width="36" height="36" viewBox="0 0 36 36" fill="none" aria-hidden="true">
+          <circle cx="18" cy="18" r="17" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M12 14C12 10.686 14.686 8 18 8C21.314 8 24 10.686 24 14C24 17.314 21.314 20 18 20V24"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="18" cy="28.5" r="2" fill="currentColor"/>
+        </svg>
+        <div class="logo-text">
+          <span class="logo-name">Сократ</span>
+          <span class="logo-sub">Мұғалім кабинеті</span>
+        </div>
+      </a>
+      <nav>
+        <a href="index.html">← Оқушы беті</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="teacher-layout">
+
+    <!-- Hero -->
+    <div class="teacher-hero">
+      <div class="section-label">Мұғалім · Мұғалім кабинеті</div>
+      <h1>Мұғалім <em>кабинеті</em></h1>
+      <p>Сабақ жоспарлары, тест және пайдалану статистикасы</p>
+    </div>
+
+    <!-- Вкладкалар -->
+    <div class="tabs" role="tablist">
+      <button class="tab-btn active" data-tab="lesson" role="tab"
+              aria-selected="true"  aria-controls="tab-lesson">ҚМЖ жоспары</button>
+      <button class="tab-btn"        data-tab="test"   role="tab"
+              aria-selected="false" aria-controls="tab-test">ТЕСТ</button>
+      <button class="tab-btn"        data-tab="stats"  role="tab"
+              aria-selected="false" aria-controls="tab-stats">Статистика</button>
+    </div>
+
+    <!-- ═══════════ ҚМЖ ЖОСПАРЫ ═══════════ -->
+    <div id="tab-lesson" class="tab-panel active" role="tabpanel">
+
+      <div style="margin-bottom:1.25rem">
+        <div class="section-label" style="margin-bottom:0.4rem">ҚР БҒМ стандарты</div>
+        <h2 style="font-family:var(--font-display);font-size:1.5rem;font-weight:300;margin:0">
+          Қысқамерзімді жоспар <em>(ҚМЖ)</em>
+        </h2>
+        <p style="color:var(--ink-muted);font-size:0.875rem;margin-top:0.35rem">
+          Барлығы / Көбі / Кейбірі · Дифференциация · Формативті бағалау
+        </p>
+      </div>
+
+      <div class="form-card">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="lp-grade">Сынып</label>
+            <select id="lp-grade">
+              <option value="5">5-сынып</option>
+              <option value="6">6-сынып</option>
+              <option value="7" selected>7-сынып</option>
+              <option value="8">8-сынып</option>
+              <option value="9">9-сынып</option>
+              <option value="10">10-сынып</option>
+              <option value="11">11-сынып</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="lp-topic">Тақырып</label>
+            <select id="lp-topic"><option>Жүктелуде…</option></select>
+          </div>
+          <div class="form-group">
+            <label for="lp-teacher">Мұғалімнің аты-жөні</label>
+            <input type="text" id="lp-teacher"
+                   placeholder="Мысалы: Айгүл Қасымова">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" id="lp-submit" class="btn btn-primary">ҚМЖ жасау</button>
+          <span id="lp-spinner" class="hidden"><span class="spinner"></span>ҚМЖ жасалуда… (60-90 сек)</span>
+        </div>
+      </div>
+
+      <div id="lp-result" class="result-area hidden">
+        <div id="lp-content"></div>
+        <div class="result-actions">
+          <button type="button" id="lp-download" class="btn btn-ghost">⬇ ҚМЖ жүктеу (.txt)</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ═══════════ ҰБТ ТЕСТТЕРІ ═══════════ -->
+    <div id="tab-test" class="tab-panel" role="tabpanel">
+
+      <div class="form-card">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="test-grade">Сынып</label>
+            <select id="test-grade">
+              <option value="5">5-сынып</option>
+              <option value="6">6-сынып</option>
+              <option value="7" selected>7-сынып</option>
+              <option value="8">8-сынып</option>
+              <option value="9">9-сынып</option>
+              <option value="10">10-сынып</option>
+              <option value="11">11-сынып</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="test-topic">Тақырып</label>
+            <select id="test-topic"><option>Жүктелуде…</option></select>
+          </div>
+          <div class="form-group">
+            <label for="test-count">Сұрақ саны</label>
+            <select id="test-count">
+              <option value="5">5 сұрақ</option>
+              <option value="10" selected>10 сұрақ</option>
+              <option value="15">15 сұрақ</option>
+              <option value="20">20 сұрақ</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" id="test-submit" class="btn btn-primary">Тест жасау</button>
+          <span id="test-spinner" class="hidden"><span class="spinner"></span>Жасалуда…</span>
+        </div>
+      </div>
+
+      <div id="test-result" class="result-area hidden">
+        <div id="test-content"></div>
+        <div class="result-actions">
+          <button type="button" id="test-download" class="btn btn-ghost">⬇ Тестті жүктеу</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ═══════════ СТАТИСТИКА ═══════════ -->
+    <div id="tab-stats" class="tab-panel" role="tabpanel">
+
+      <!-- Жинақ карточкалары -->
+      <div class="stat-cards">
+        <div class="stat-card">
+          <div class="stat-value" id="stat-total">—</div>
+          <div class="stat-label">Барлық диалогтар</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-avg-msg">—</div>
+          <div class="stat-label">Орташа хабарлама</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-top-topic">—</div>
+          <div class="stat-label">Танымал тақырып</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-top-grade">—</div>
+          <div class="stat-label">Танымал сынып</div>
+        </div>
+      </div>
+
+      <!-- Сынып бойынша кесте -->
+      <div class="stats-section">
+        <h3>Сынып бойынша белсенділік</h3>
+        <table class="data-table" id="grade-table">
+          <thead>
+            <tr>
+              <th>Сынып</th>
+              <th>Диалог саны</th>
+              <th>Үлес %</th>
+            </tr>
+          </thead>
+          <tbody id="grade-table-body">
+            <tr><td colspan="3" style="color:var(--ink-faint);font-size:0.875rem">Жүктелуде…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Тақырып бойынша кесте -->
+      <div class="stats-section">
+        <h3>Ең жиі сұралған тақырыптар</h3>
+        <table class="data-table" id="topic-table">
+          <thead>
+            <tr>
+              <th>Тақырып</th>
+              <th>Саны</th>
+              <th>Үлес %</th>
+            </tr>
+          </thead>
+          <tbody id="topic-table-body">
+            <tr><td colspan="3" style="color:var(--ink-faint);font-size:0.875rem">Жүктелуде…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="stats-updated" id="stats-updated"></div>
+
+      <!-- ══ ТЕСТ НӘТИЖЕЛЕРІ ══════════════════════════════════ -->
+      <div style="margin-top:3rem;padding-top:2rem;border-top:2px solid var(--ink-faint)">
+        <div class="section-label" style="margin-bottom:0.875rem">Тест нәтижелері</div>
+
+        <!-- Тест метрика карточкалары -->
+        <div class="stat-cards" style="margin-bottom:1.5rem">
+          <div class="stat-card">
+            <div class="stat-value" id="ts-total">—</div>
+            <div class="stat-label">Барлық тапсырулар</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="ts-avg">—</div>
+            <div class="stat-label">Орташа нәтиже %</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="ts-hard" style="font-size:1.25rem;padding-top:0.35rem">—</div>
+            <div class="stat-label">Ең қиын тақырып</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="ts-today">—</div>
+            <div class="stat-label">Бүгін тапсырылды</div>
+          </div>
+        </div>
+
+        <!-- Қиын сұрақтар кестесі -->
+        <div class="stats-section">
+          <h3>Қиын сұрақтар <span style="font-family:var(--font-mono);font-size:0.7rem;color:var(--ink-faint)">(қате % &gt; 50)</span></h3>
+          <table class="data-table" id="hard-q-table">
+            <thead>
+              <tr>
+                <th>Сұрақ</th>
+                <th>Тақырып</th>
+                <th>Қате %</th>
+                <th>Рет саны</th>
+              </tr>
+            </thead>
+            <tbody id="hard-q-body">
+              <tr><td colspan="4" style="color:var(--ink-faint);font-size:0.875rem">Жүктелуде…</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Соңғы нәтижелер кестесі -->
+        <div class="stats-section">
+          <h3>Соңғы нәтижелер</h3>
+          <table class="data-table" id="recent-results-table">
+            <thead>
+              <tr>
+                <th>Оқушы аты</th>
+                <th>Сынып</th>
+                <th>Тақырып</th>
+                <th>Нәтиже</th>
+                <th>Уақыт</th>
+              </tr>
+            </thead>
+            <tbody id="recent-results-body">
+              <tr><td colspan="5" style="color:var(--ink-faint);font-size:0.875rem">Жүктелуде…</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:1rem;margin-top:1rem">
+          <button type="button" id="refresh-test-stats" class="btn btn-ghost" style="font-size:0.875rem">
+            ↺ Статистиканы жаңарту
+          </button>
+          <span class="stats-updated" id="test-stats-updated"></span>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="footer-name">Сократ</span>
+        <p>Қазақстан мектептері үшін информатика пәнінің AI-тьюторы. Диссертациялық жоба.</p>
+      </div>
+      <div class="footer-meta">
+        <span>Powered by Claude Sonnet 4</span>
+        <span>2026</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="teacher.js" defer></script>
+</body>
+</html>

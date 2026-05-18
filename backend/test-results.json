@@ -1,0 +1,73 @@
+[
+  {
+    "studentName": "Арман Жаксылык",
+    "grade": "8",
+    "topic": "Python бағдарламалау тілі негіздері",
+    "score": 8,
+    "total": 10,
+    "percent": 80,
+    "answers": [
+      {
+        "question": "Python тілінде экранға мәтін шығару үшін қандай функция қолданылады?",
+        "correct": "A",
+        "studentAnswer": "A",
+        "isCorrect": true
+      },
+      {
+        "question": "Python тілінде пайдаланушыдан деректер енгізу үшін қандай функция қолданылады?",
+        "correct": "B",
+        "studentAnswer": "B",
+        "isCorrect": true
+      },
+      {
+        "question": "Python тілінде бүтін санды типке айналдыру үшін қандай функция қолданылады?",
+        "correct": "C",
+        "studentAnswer": "A",
+        "isCorrect": false
+      },
+      {
+        "question": "Төмендегі Python кодының нәтижесі қандай болады?\nx = 10\ny = 3\nprint(x % y)",
+        "correct": "C",
+        "studentAnswer": "C",
+        "isCorrect": true
+      },
+      {
+        "question": "Python тілінде шартты оператор қалай жазылады?",
+        "correct": "C",
+        "studentAnswer": "C",
+        "isCorrect": true
+      },
+      {
+        "question": "Python тілінде for циклі қалай жазылады?",
+        "correct": "A",
+        "studentAnswer": "A",
+        "isCorrect": true
+      },
+      {
+        "question": "Төмендегі Python кодының нәтижесі қандай болады?\nсан = 7\nif сан > 5:\n    print('Үлкен')\nelse:\n    print('Кіші')",
+        "correct": "B",
+        "studentAnswer": "B",
+        "isCorrect": true
+      },
+      {
+        "question": "Python тілінде тізім (список) құру үшін қандай жақша қолданылады?",
+        "correct": "C",
+        "studentAnswer": "C",
+        "isCorrect": true
+      },
+      {
+        "question": "Python тілінде # белгісі не үшін қолданылады?",
+        "correct": "C",
+        "studentAnswer": "C",
+        "isCorrect": true
+      },
+      {
+        "question": "Төмендегі Python коды нешеге дейін санайды?\nfor i in range(1, 6):\n    print(i)",
+        "correct": "C",
+        "studentAnswer": "B",
+        "isCorrect": false
+      }
+    ],
+    "timestamp": "2026-05-02T08:06:20.403Z"
+  }
+]
